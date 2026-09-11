@@ -1,6 +1,14 @@
 #ifndef RUNTIME_GECKO_SETJMP_H
 #define RUNTIME_GECKO_SETJMP_H
 
+#if !defined(__MWERKS__)
+// Hosted libc's <setjmp.h> also defines __jmp_buf and longjmp. Keep the Gecko register
+// layout, but give the identifiers private names so both headers can coexist in one TU.
+#include <setjmp.h>
+#define __jmp_buf Gecko__jmp_buf
+#define longjmp Gecko_longjmp
+#endif
+
 typedef struct __jmp_buf {
     unsigned long pc;       /*	0: saved PC			*/
     unsigned long cr;       /*	4: saved CR			*/
