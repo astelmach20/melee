@@ -9,7 +9,12 @@
 #include <sysdolphin/baselib/gobj.h>
 #include <sysdolphin/baselib/jobj.h>
 
+#ifdef MWERKS_GEKKO
 #define EFALT_VA_ARG(t) (*((t*) __va_arg(vlist_arg, _var_arg_typeof(t))))
+#else
+// __va_arg/_var_arg_typeof are MetroWerks builtins; hosted compilers use va_arg.
+#define EFALT_VA_ARG(t) va_arg(vlist, t)
+#endif
 
 extern volatile u32 efLib_LoadKind;
 extern volatile s32 efLib_AnimCount;
