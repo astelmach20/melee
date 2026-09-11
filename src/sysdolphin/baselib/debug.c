@@ -11,6 +11,8 @@ struct DebugContext {
 
 static ReportCallback reportCallback;
 static PanicCallback panicCallback;
+
+#if defined(__MWERKS__)
 static __io_proc logFunc;
 
 #ifdef MUST_MATCH
@@ -35,6 +37,11 @@ void HSD_LogInit(void)
     stdout->write_proc = report_func;
     stdout->state.error = 0;
 }
+#else
+// MSL exposes FILE::write_proc so HSD can intercept stdout; hosted libcs don't.
+// Reports still reach OSReport; the callback hook is a no-op here.
+void HSD_LogInit(void) {}
+#endif
 
 void __assert(char* str, u32 arg1, char* arg2)
 {
