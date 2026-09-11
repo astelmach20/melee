@@ -13,7 +13,10 @@ typedef jmp_t jtbl_t[];
 #define __frsqrte(x) sqrt(x)
 #define sqrtf__Ff(x) sqrtf(x)
 #define sqrtf_accurate(x) sqrtf(x)
-#define __fabs(f) fabsf(f)
+// __fabs is MetroWerks' double-precision abs (MetroTRK/intrinsics.h: double __fabs(double)).
+// Mapping it to fabsf turned that prototype into `double fabsf(double)`, which clashes
+// with libc's `float fabsf(float)` in every TU that also sees <math.h>.
+#define __fabs(f) fabs(f)
 #endif
 
 #ifndef UNK_T
