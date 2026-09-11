@@ -155,7 +155,11 @@ typedef bool (*Predicate)(void);
         int x[1 - 2 * !(cond)];                                               \
     };
 #else
-#define STATIC_ASSERT(cond) _Static_assert((cond), "(" #cond ") failed")
+/* Layout asserts encode the GameCube's ILP32 ABI. On 64-bit hosts pointer-
+ * bearing structs grow, so the condition is only checked when pointers are
+ * 4 bytes wide (CI verifies layouts at -m32). */
+#define STATIC_ASSERT(cond)                                                   \
+    _Static_assert(sizeof(void*) != 4 || (cond), "(" #cond ") failed")
 #endif
 
 #if defined(MUST_MATCH) || defined(LINT)
