@@ -28,7 +28,13 @@
 typedef int enum_t;
 
 /// Signed variant of ::size_t
+#if defined(__MWERKS__) || defined(M2CTX)
 typedef signed int ssize_t;
+#else
+// Hosted toolchains already define ssize_t (int on ILP32, long on LP64); redefining it
+// as `signed int` conflicts with libc on 64-bit targets.
+#include <sys/types.h> // IWYU pragma: export
+#endif
 
 /// A @c void callback with no arguments.
 typedef void (*Event)(void);
